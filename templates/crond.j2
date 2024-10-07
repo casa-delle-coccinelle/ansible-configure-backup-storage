@@ -1,0 +1,2 @@
+MAILTO=""
+{{ backup_cron_schedule }} {{ backup_user }} /bin/bash {{ script_destination }} {{ backup_source }} {{ backup_destination }} 2>&1 | /usr/bin/logger -t backup_archiver

@@ -1,0 +1,38 @@
+---
+- name: Ensure backup group
+  ansible.builtin.group:
+    name: "{{ backup_group }}"
+    state: present
+
+
+- name: Ensure backup user
+  ansible.builtin.user:
+    create_home: true
+    name: "{{ backup_user }}"
+    group: "{{ backup_group }}"
+    home: "{{ backup_destination }}"
+    state: present
+    system: true
+
+- name: Generate required directories
+  ansible.builtin.file:
+    state: directory
+    path: "{{ item.path }}"
+    mode: "0777"
+  with_items:
+    - path: "{{ backup_source }}"
+    - path: "{{ backup_destination }}"
+    - path: "{{ script_destination | dirname }}"
+
+- name: Ensure archive script
+  ansible.builtin.copy:
+    src: archive.sh
+    dest: "{{ script_destination }}"
+    owner: "{{ backup_user }}"
+    group: "{{ backup_group }}"
+    mode: '0444'
+
+- name: Ensure crond
+  ansible.builtin.template:
+    src: crond.j2
+    dest: /etc/cron.d/backup-archive

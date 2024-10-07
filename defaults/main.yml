@@ -1,0 +1,7 @@
+---
+backup_cron_schedule: "30 1 * * *"
+backup_user: backup
+backup_group: backup
+backup_source: /backup
+backup_destination: /backup-store
+script_destination: /scripts/archive.sh
